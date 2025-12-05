@@ -1,3 +1,4 @@
+import { fileURLToPath } from "url";
 import { pool } from "../../config/db"
 
 const getAllUsers = async() => {
@@ -6,17 +7,41 @@ const getAllUsers = async() => {
     return result;
 }
 
-const updateUserData = async(id: string, data : Record<string, unknown>) => {
+const updateUserData = async(id: string, data : Record<string, unknown>, role : string) => {
     const fields = Object.keys(data); 
-    if(fields.length === 0) {
-        return "No data to update";
-    }
     
-    const result = await pool.query('UPDATE users SET ... WHERE id = $1 RETURNING *', [id]); 
+    if(fields.length === 0) return "No data to update"
+
+    const adminAllowedFields = ['name', 'email', 'phone', 'role'];
+    const customerAllowedFields = ['name', 'email', 'phone']; 
+
+    const allowedFields = role === 'admin' ? adminAllowedFields : customerAllowedFields;
+
+    const filterFields = fields.filter((field) => allowedFields.includes(field));
+
+    if(filterFields.length === 0){
+        return "No valid fields to update";
+    }
+    const setClause = filterFields.map((field, index) => `${field} = $${index + 2}`).join(', ');
+
+    console.log({setClause : setClause});
+
+    const values = [id, ...filterFields.map((field) => data[field])]; 
+
+    console.log({values : values});
+
+    const query = `
+        UPDATE users
+        SET ${setClause}
+        WHERE id = $1
+        RETURNING *;
+    `
+    const result = await pool.query(query, values); 
     return result; 
 }
 
 
 export const userServices = {
     getAllUsers,
+    updateUserData
 }
