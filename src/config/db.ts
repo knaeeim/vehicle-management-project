@@ -21,11 +21,11 @@ const initDB = async () => {
     await pool.query(
         `CREATE TABLE IF NOT EXISTS Vehicles(
             id SERIAL PRIMARY KEY, 
-            vehicke_name VARCHAR(200) NOT NULL,
-            type VARCHAR(30) NOT NULL, 
+            vehicle_name VARCHAR(200) NOT NULL,
+            type VARCHAR(30) NOT NULL,
             registration_number VARCHAR(100) UNIQUE NOT NULL, 
-            daily_rent_price VARCHAR(15) NOT NULL, 
-            availability_status VARCHAR(50)
+            daily_rent_price INT NOT NULL, 
+            availability_status VARCHAR(50) DEFAULT 'available'
         )`
     )
 
