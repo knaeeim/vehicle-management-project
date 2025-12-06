@@ -3,13 +3,7 @@ import { bookingServices } from "./booking.service";
 
 const getAllBooking = async (req: Request, res: Response) => {
     try {
-        if (req.user?.role !== 'admin') {
-            return res.status(403).json({
-                success: false,
-                message: "Forbidden: Admins only",
-            })
-        }
-        const result = await bookingServices.getAllBooking(req.user);
+        const result = await bookingServices.getAllBooking(req.user!);
         res.status(200).json({
             success: true,
             message: "Bookings retrieved successfully",
