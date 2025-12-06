@@ -1,0 +1,60 @@
+import { Request, Response } from "express";
+import { bookingServices } from "./booking.service";
+
+const getAllBooking = async ( req: Request, res: Response ) => {
+    try {
+        if(req.user?.role !== 'admin'){
+            return res.status(403).json({
+                success: false,
+                message: "Forbidden: Admins only",
+            })
+        }
+        const result = await bookingServices.getAllBooking(); 
+        res.status(200).json({
+            success: true,
+            message: "Bookings retrieved successfully",
+            data: result.rows,
+        });
+    } catch (error : any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            errors: error,
+        })
+    }
+}
+
+const getSingleBooking = async ( req: Request, res: Response ) => {
+    try {
+        const {id} = req.params; 
+        const result = await bookingServices.getSingleBooking( id as string); 
+        res.status(200).json({
+            success: true,
+            message: "Booking retrieved successfully",
+            data: result.rows[0],
+        });
+    } catch (error : any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            errors: error,
+        })
+    }
+}
+
+const createBooking = async ( req: Request, res: Response) => {
+    try {
+        
+    } catch (error : any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            errors: error,
+        })
+    }
+}
+
+export const bookingControllers = {
+    getAllBooking, 
+    getSingleBooking,
+} 
