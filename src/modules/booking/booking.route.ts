@@ -9,8 +9,6 @@ router.get('/', auth(), bookingControllers.getAllBooking);
 
 router.get('/:id', bookingControllers.getSingleBooking); 
 
-
-
-
+router.post('/', bookingControllers.createBooking);
 
 export const bookingRouter = router;

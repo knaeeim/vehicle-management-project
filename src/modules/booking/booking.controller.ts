@@ -44,7 +44,31 @@ const getSingleBooking = async ( req: Request, res: Response ) => {
 
 const createBooking = async ( req: Request, res: Response) => {
     try {
-        
+        const result = await bookingServices.createBooking(req.body); 
+        let responsedData : object = {}
+        if(typeof result === 'string'){
+            return  res.status(404).json({
+                success: false,
+                message: result,
+            })
+        }
+        else{
+            const { result : bookingInfo, getVehicle } = result;
+            const bookingDate = bookingInfo.rows[0];
+            const { vehicle_name, daily_rent_price } = getVehicle.rows[0];
+            responsedData = {
+                ...bookingDate, 
+                vehicle : {
+                    vehicle_name,
+                    daily_rent_price
+                }
+            }
+        }
+        res.status(201).json({
+            success: true,
+            message: "Booking created successfully",
+            data: responsedData,
+        });
     } catch (error : any) {
         res.status(500).json({
             success: false,
@@ -57,4 +81,5 @@ const createBooking = async ( req: Request, res: Response) => {
 export const bookingControllers = {
     getAllBooking, 
     getSingleBooking,
+    createBooking,
 } 

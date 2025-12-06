@@ -37,7 +37,7 @@ const initDB = async () => {
             rent_start_date TIMESTAMP NOT NULL, 
             rent_end_date TIMESTAMP NOT NULL, 
             total_price NUMERIC(10, 2) NOT NULL CHECK (total_price > 0), 
-            status VARCHAR(50) NOT NULL
+            status VARCHAR(50)
         )`
     )
 }
