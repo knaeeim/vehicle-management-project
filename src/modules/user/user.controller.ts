@@ -70,6 +70,14 @@ const deleteUser = async ( req: Request, res: Response ) => {
 
         const { id } = req.params;
         const result = await userServices.deleteUser( id as string); 
+
+        if(typeof result === 'string'){
+            return  res.status(400).json({
+                success: false,
+                message: result,
+            })
+        }
+
         if(result.rowCount === 0){
             res.status(404).json({
                 success: false,

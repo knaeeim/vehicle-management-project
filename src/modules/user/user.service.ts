@@ -39,6 +39,14 @@ const updateUserData = async(id: string, data : Record<string, unknown>, role : 
 }
 
 const deleteUser = async(id: string) => {
+    const isBooking = await pool.query('SELECT * FROM Bookings WHERE customer_id = $1', [id]); 
+    const bookingList = isBooking.rows;
+    const activeBooking = bookingList.map((booking) => booking.status === 'active');
+    
+    if(activeBooking.length > 0){
+        return 'Cannot delete user with active bookings';
+    }
+    
     const result = await pool.query('DELETE FROM Users WHERE id = $1 RETURNING *', [id]);
     return result;
 }
