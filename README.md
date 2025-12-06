@@ -422,7 +422,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👥 Authors
 
-Your Name - [kmnaeeim@gmail.com](mailto:kmnaeeim@gmail.com)
+Khairul Bashar Naeeim - [kmnaeeim@gmail.com](mailto:kmnaeeim@gmail.com)
 
 ## 🙏 Acknowledgments
 
