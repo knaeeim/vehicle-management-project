@@ -89,7 +89,19 @@ const updateVehicle = async ( req: Request, res: Response) => {
 
 const deleteVehicle = async ( req: Request, res: Response) => {
     try {
-        
+        if(req.user?.role !== 'admin'){
+            return res.status(403).json({
+                success: false,
+                message: "Forbidden: Admins only",
+            })
+        }
+        const { id } = req.params; 
+        const result = await vehicleServices.deleteVehicle( id as string );
+        res.status(200).json({
+            success: true,
+            message: "Vehicle deleted successfully",
+            data: null,
+        });
     } catch (error : any) {
         res.status(500).json({
             success: false,
@@ -106,4 +118,5 @@ export const vehicleControllers = {
     createVehicle,
     getSingleVehicle, 
     updateVehicle,
+    deleteVehicle
 }

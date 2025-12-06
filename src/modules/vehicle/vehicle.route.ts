@@ -12,4 +12,6 @@ router.post('/', auth(), vehicleControllers.createVehicle);
 
 router.put('/:id', auth(), vehicleControllers.updateVehicle);
 
+router.delete('/:id', auth(), vehicleControllers.deleteVehicle);
+
 export const vehicleRouter = router;
