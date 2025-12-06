@@ -11,4 +11,6 @@ router.get('/:id', bookingControllers.getSingleBooking);
 
 router.post('/', bookingControllers.createBooking);
 
+router.put('/:bookingId', auth(), bookingControllers.bookingUpdate);
+
 export const bookingRouter = router;
