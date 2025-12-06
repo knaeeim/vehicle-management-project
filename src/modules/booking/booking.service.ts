@@ -1,34 +1,35 @@
-import { defaults } from "pg";
 import { pool } from "../../config/db"
+import { JwtPayload } from "jsonwebtoken";
 
-const getAllBooking = async () => {
-    const result = await pool.query(`
-        SELECT 
-            b.id, 
-            b.customer_id, 
-            b.vehicle_id, 
-            b.rent_start_date, 
-            b.rent_end_date, 
-            b.total_price, 
-            b.status, 
-            json_build_object(
-                'name', u.name,
-                'email', u.email
-            ) as customer, 
-            json_build_object(
-                'vehicle_name', v.vehicle_name,
-                'registration_number', v.registration_number
-            ) as vehicle
-        FROM bookings b
-        INNER JOIN users u ON b.customer_id = u.id
-        INNER JOIN vehicles v ON b.vehicle_id = v.id
-        ORDER BY b.id DESC
-    `);
-    return result;
-}
-
-const getSingleBooking = async (id: string) => {
-    const result = await pool.query(`
+const getAllBooking = async (user : JwtPayload) => {
+    let result;
+    const userData = await pool.query('SELECT * FROM users WHERE email = $1', [user.email]);
+    const id = userData.rows[0].id;
+    if(user.role === 'admin'){
+        result = await pool.query(`
+            SELECT 
+                b.id, 
+                b.customer_id, 
+                b.vehicle_id, 
+                b.rent_start_date, 
+                b.rent_end_date, 
+                b.total_price, 
+                b.status, 
+                json_build_object(
+                    'name', u.name,
+                    'email', u.email
+                ) as customer, 
+                json_build_object(
+                    'vehicle_name', v.vehicle_name,
+                    'registration_number', v.registration_number
+                ) as vehicle
+            FROM bookings b
+            INNER JOIN users u ON b.customer_id = u.id
+            INNER JOIN vehicles v ON b.vehicle_id = v.id
+            ORDER BY b.id DESC
+        `);
+    }else{
+        result = await pool.query(`
         SELECT 
             b.id, 
             b.customer_id, 
@@ -48,6 +49,8 @@ const getSingleBooking = async (id: string) => {
         WHERE b.customer_id = $1
         ORDER BY b.rent_start_date DESC
     `, [id]);
+    }
+
     return result;
 }
 
@@ -141,7 +144,6 @@ const bookingUpdate = async (id: string, role: string) => {
 
 export const bookingServices = {
     getAllBooking,
-    getSingleBooking,
     createBooking,
     bookingUpdate
 }

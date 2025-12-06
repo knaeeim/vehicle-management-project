@@ -9,7 +9,7 @@ const getAllBooking = async (req: Request, res: Response) => {
                 message: "Forbidden: Admins only",
             })
         }
-        const result = await bookingServices.getAllBooking();
+        const result = await bookingServices.getAllBooking(req.user);
         res.status(200).json({
             success: true,
             message: "Bookings retrieved successfully",
@@ -24,30 +24,6 @@ const getAllBooking = async (req: Request, res: Response) => {
     }
 }
 
-const getSingleBooking = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const result = await bookingServices.getSingleBooking(id as string);
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "No bookings found for this customer",
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Bookings retrieved successfully",
-            data: result.rows, // Return all bookings, not just result.rows[0].booking
-        });
-    } catch (error: any) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-            errors: error,
-        })
-    }
-}
 
 const createBooking = async (req: Request, res: Response) => {
     try {
@@ -111,7 +87,6 @@ const bookingUpdate = async (req: Request, res: Response) => {
 
 export const bookingControllers = {
     getAllBooking,
-    getSingleBooking,
     createBooking,
     bookingUpdate
 } 
