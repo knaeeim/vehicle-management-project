@@ -1,4 +1,3 @@
-import { fileURLToPath } from "url";
 import { pool } from "../../config/db"
 
 const getAllUsers = async() => {
@@ -19,9 +18,8 @@ const updateUserData = async(id: string, data : Record<string, unknown>, role : 
 
     const filterFields = fields.filter((field) => allowedFields.includes(field));
 
-    if(filterFields.length === 0){
-        return "No valid fields to update";
-    }
+    if(filterFields.length === 0) return "No valid fields to update";
+
     const setClause = filterFields.map((field, index) => `${field} = $${index + 2}`).join(', ');
 
     console.log({setClause : setClause});
@@ -40,8 +38,14 @@ const updateUserData = async(id: string, data : Record<string, unknown>, role : 
     return result; 
 }
 
+const deleteUser = async(id: string) => {
+    const result = await pool.query('DELETE FROM Users WHERE id = $1 RETURNING *', [id]);
+    return result;
+}
+
 
 export const userServices = {
     getAllUsers,
-    updateUserData
+    updateUserData, 
+    deleteUser
 }

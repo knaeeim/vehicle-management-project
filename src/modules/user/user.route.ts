@@ -8,4 +8,6 @@ router.get('/', auth(), userControllers.getAllUsers);
 
 router.put('/:id', auth(), userControllers.updateUserData);
 
+router.delete('/:id', auth(), userControllers.deleteUser);
+
 export const userRouters = router;
